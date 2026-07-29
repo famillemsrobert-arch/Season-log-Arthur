@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arthur Robert - #10 - Player highlight</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9A%BD%3C/text%3E%3C/svg%3E">
+<meta property="og:title" content="Arthur Robert - #10 - Player highlight">
+<meta property="og:description" content="Season log of goals, assists, and highlights.">
+<meta property="og:type" content="website">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Arthur #10">
+<meta name="theme-color" content="#3D8FC4">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1B2B22;
+    --paper: #F6F4EC;
+    --paper-2: #EEEAD9;
+    --green: #2F6B4F;
+    --green-dark: #1F4A36;
+    --green-light: #DCEEE2;
+    --gold: #B98A20;
+    --gold-light: #F5E8C9;
+    --slate: #55605A;
+    --slate-light: #E4E3DC;
+    --coral: #B85C3E;
+    --coral-light: #F3DED4;
+    --line: rgba(27,43,34,0.14);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    padding: 0 0 4rem;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 0 1.5rem; }
+
+  header {
+    position: relative;
+    background: var(--green-dark);
+    color: var(--paper);
+    overflow: hidden;
+    padding: 2.5rem 0 2rem;
+    margin-bottom: 2rem;
+  }
+  header .numeral {
+    position: absolute;
+    right: -0.5rem;
+    top: -2rem;
+    font-family: 'Oswald', sans-serif;
+    font-weight: 600;
+    font-size: 13rem;
+    color: rgba(246,244,236,0.08);
+    line-height: 1;
+    user-select: none;
+  }
+  header .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    margin: 0 0 0.4rem;
+  }
+  header h1 {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 500;
+    font-size: 2.1rem;
+    margin: 0;
+    letter-spacing: 0.01em;
+  }
+  .statline {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+    position: relative;
+    z-index: 1;
+  }
+  .stat {
+    background: rgba(246,244,236,0.08);
+    border: 0.5px solid rgba(246,244,236,0.25);
+    border-radius: 10px;
+    padding: 0.65rem 1rem;
+    min-width: 84px;
+  }
+  .stat .n { font-family: 'Oswald', sans-serif; font-size: 1.5rem; font-weight: 500; line-height: 1; }
+  .stat .l { font-size: 11px; color: rgba(246,244,236,0.7); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.05em; }
+
+  .card {
+    background: #fff;
+    border: 0.5px solid var(--line);
+    border-radius: 12px;
+    padding: 1.25rem 1.4rem;
+    margin-bottom: 1.75rem;
+  }
+  .card h2 {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 500;
+    font-size: 1.05rem;
+    margin: 0 0 1rem;
+    color: var(--green-dark);
+  }
+  .row { display: flex; gap: 0.75rem; margin-bottom: 0.75rem; flex-wrap: wrap; }
+  .field { flex: 1; min-width: 140px; display: flex; flex-direction: column; gap: 4px; }
+  .field label { font-size: 12px; color: var(--slate); font-weight: 500; }
+  input, select, textarea {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    padding: 8px 10px;
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    background: var(--paper);
+    color: var(--ink);
+  }
+  textarea { resize: vertical; min-height: 54px; }
+  input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--green);
+    box-shadow: 0 0 0 2px var(--green-light);
+  }
+  button.primary {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    background: var(--green);
+    color: #fff;
+    border: none;
+    border-radius: 7px;
+    padding: 9px 18px;
+    cursor: pointer;
+  }
+  button.primary:hover { background: var(--green-dark); }
+  button.primary:active { transform: scale(0.98); }
+
+  .entries { display: flex; flex-direction: column; gap: 0.6rem; }
+  .entry {
+    background: #fff;
+    border: 0.5px solid var(--line);
+    border-left: 3px solid var(--green);
+    border-radius: 0 10px 10px 0;
+    padding: 0.9rem 1.1rem;
+  }
+  .entry.tag-goal { border-left-color: var(--gold); }
+  .entry.tag-save { border-left-color: var(--slate); }
+  .entry.tag-skill { border-left-color: var(--coral); }
+  .entry-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 0.75rem; }
+  .entry-meta { font-size: 12px; color: var(--slate); font-family: 'JetBrains Mono', monospace; }
+  .chip {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 2px 9px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .chip.tag-assist { background: var(--green-light); color: var(--green-dark); }
+  .chip.tag-goal { background: var(--gold-light); color: #7A5A14; }
+  .chip.tag-save { background: var(--slate-light); color: #3A423D; }
+  .chip.tag-skill { background: var(--coral-light); color: #7C3B24; }
+  .chip.tag-other { background: var(--paper-2); color: var(--slate); }
+  .entry-notes { font-size: 14px; margin: 0.5rem 0 0; line-height: 1.5; }
+  .entry-actions { display: flex; gap: 0.9rem; margin-top: 0.6rem; }
+  .entry-actions a, .entry-actions button.link {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--green-dark);
+    text-decoration: none;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .entry-actions button.link.danger { color: var(--coral); }
+  .empty {
+    text-align: center;
+    padding: 2.5rem 1rem;
+    color: var(--slate);
+    font-size: 14px;
+  }
+  .empty .big { font-family: 'Oswald', sans-serif; font-size: 1.2rem; color: var(--ink); margin-bottom: 6px; }
+  #status { font-size: 12px; color: var(--slate); margin-top: 0.5rem; min-height: 16px; }
+
+  .card-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+  .card-head h2 { margin: 0; }
+  #sortSelect { font-size: 13px; padding: 6px 8px; }
+  button.ghost {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 12px;
+    background: none;
+    color: var(--green-dark);
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    padding: 6px 12px;
+    cursor: pointer;
+  }
+  button.ghost:hover { background: var(--green-light); }
+
+  .opp-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .opp-table th {
+    text-align: left;
+    font-weight: 500;
+    color: var(--slate);
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.03em;
+    padding: 0 8px 6px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .opp-table td {
+    padding: 8px 8px 8px 0;
+    border-bottom: 0.5px solid var(--line);
+  }
+  .opp-table tr:last-child td { border-bottom: none; }
+  .opp-table .opp-name { font-weight: 500; }
+  .opp-table .num { font-family: 'JetBrains Mono', monospace; }
+
+  .upload-row { display: flex; align-items: center; gap: 0.9rem; margin-bottom: 1rem; }
+  input[type="file"] {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    padding: 0;
+    border: none;
+    background: none;
+  }
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 0.6rem;
+  }
+  .photo-item {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    aspect-ratio: 1 / 1;
+    background: var(--paper-2);
+    border: 0.5px solid var(--line);
+  }
+  .photo-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    cursor: pointer;
+  }
+  .photo-item .del-btn {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: rgba(27,43,34,0.65);
+    color: #fff;
+    border: none;
+    font-size: 13px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .photo-item .del-btn:hover { background: var(--coral); }
+  .photo-uploading {
+    font-size: 12px;
+    color: var(--slate);
+    font-style: italic;
+  }
+
+  .standings-row { display: flex; gap: 0.75rem; align-items: flex-end; }
+  .standings-row .field { max-width: 100px; }
+  .standings-display {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 1rem;
+  }
+  .standings-stat {
+    background: var(--paper);
+    border: 0.5px solid var(--line);
+    border-radius: 10px;
+    padding: 0.65rem 1.1rem;
+    min-width: 84px;
+    text-align: center;
+  }
+  .standings-stat .n { font-family: 'Oswald', sans-serif; font-size: 1.5rem; font-weight: 500; line-height: 1; color: var(--green-dark); }
+  .standings-stat .l { font-size: 11px; color: var(--slate); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .standings-note { font-size: 12px; color: var(--slate); margin-top: 0.6rem; }
+</style>
+</head>
+<body>
+<header>
+  <div class="numeral">10</div>
+  <div class="wrap">
+    <p class="eyebrow">Season log</p>
+    <h1 id="playerNameHeading">Arthur Robert - #10 - Player highlight</h1>
+    <div class="statline">
+      <div class="stat"><div class="n" id="statGoals">0</div><div class="l">Goals</div></div>
+      <div class="stat"><div class="n" id="statAssists">0</div><div class="l">Assists</div></div>
+      <div class="stat"><div class="n" id="statTotal">0</div><div class="l">Clips logged</div></div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="card">
+    <h2>Log a moment</h2>
+    <div class="row">
+      <div class="field">
+        <label for="fDate">Date</label>
+        <input type="date" id="fDate">
+      </div>
+      <div class="field">
+        <label for="fOpponent">Opponent</label>
+        <input type="text" id="fOpponent" placeholder="e.g. Riverside SC">
+      </div>
+      <div class="field" style="max-width:120px;">
+        <label for="fMinute">Minute</label>
+        <input type="text" id="fMinute" placeholder="e.g. 34'">
+      </div>
+    </div>
+    <div class="row">
+      <div class="field">
+        <label for="fType">Type</label>
+        <select id="fType">
+          <option value="goal">Goal</option>
+          <option value="assist" selected>Assist</option>
+          <option value="save">Save / defense</option>
+          <option value="skill">Skill move</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div class="field" style="flex: 2;">
+        <label for="fLink">Clip link</label>
+        <input type="url" id="fLink" placeholder="Paste the Veo clip link">
+      </div>
+    </div>
+    <div class="row">
+      <div class="field">
+        <label for="fNotes">Notes</label>
+        <textarea id="fNotes" placeholder="What happened — the play, who set it up, anything worth remembering."></textarea>
+      </div>
+    </div>
+    <button class="primary" id="addBtn">Add to log</button>
+    <div id="status"></div>
+  </div>
+
+  <div class="card">
+    <h2>AFC ECNL-RL — regular season standing</h2>
+    <div class="standings-row">
+      <div class="field">
+        <label for="fWins">Wins</label>
+        <input type="number" id="fWins" min="0" value="0">
+      </div>
+      <div class="field">
+        <label for="fLosses">Losses</label>
+        <input type="number" id="fLosses" min="0" value="0">
+      </div>
+      <div class="field">
+        <label for="fDraws">Draws</label>
+        <input type="number" id="fDraws" min="0" value="0">
+      </div>
+      <button class="primary" id="saveStandingsBtn">Save</button>
+    </div>
+    <div class="standings-display" id="standingsDisplay"></div>
+    <p class="standings-note">Updated manually from the <a href="https://theecnl.com/sports/2023/8/8/ECNLRLB_0808230006.aspx" target="_blank" rel="noopener">ECNL standings page</a> — the league site doesn't allow automatic pulling, so update this whenever the table changes.</p>
+  </div>
+
+  <div class="card">
+    <h2>Photos</h2>
+    <div class="upload-row">
+      <input type="file" id="fPhoto" accept="image/*" multiple>
+      <span class="photo-uploading" id="uploadStatus"></span>
+    </div>
+    <div class="gallery" id="gallery"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <h2>Season summary</h2>
+      <button class="ghost" id="copySummaryBtn">Copy summary</button>
+    </div>
+    <div id="summaryContent"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <h2>Match log</h2>
+      <select id="sortSelect">
+        <option value="date-desc">Newest first</option>
+        <option value="date-asc">Oldest first</option>
+        <option value="opponent">By opponent (A–Z)</option>
+      </select>
+    </div>
+    <div class="entries" id="entries"></div>
+  </div>
+</div>
+
+<script>
+const API_URL = 'https://script.google.com/macros/s/AKfycbw7n_5W2XNFzrAB-atsqEe1ETVOpLzHCy8AWW6mY3sZjcLPNmreSmS-VOQmGylOGddh/exec';
+let entries = [];
+
+function typeLabel(t) {
+  return { goal: 'Goal', assist: 'Assist', save: 'Save / defense', skill: 'Skill move', other: 'Other' }[t] || 'Other';
+}
+
+function formatDate(d) {
+  if (!d) return '';
+  const dt = new Date(d + 'T00:00:00');
+  if (isNaN(dt)) return d;
+  return dt.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+async function loadEntries() {
+  try {
+    const res = await fetch(API_URL);
+    entries = await res.json();
+  } catch (e) {
+    entries = [];
+    setStatus('Could not load the log — check your connection.', true);
+  }
+  render();
+}
+
+async function saveEntries() {
+  try {
+    const res = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(entries)
+    });
+    const text = await res.text();
+    let parsed;
+    try { parsed = JSON.parse(text); } catch (_) { parsed = null; }
+    if (!res.ok || !parsed || !parsed.success) {
+      setStatus('Save failed: ' + text.slice(0, 120), true);
+    }
+  } catch (e) {
+    setStatus('Save failed: ' + e.message, true);
+  }
+}
+
+function setStatus(msg, isError) {
+  const el = document.getElementById('status');
+  el.textContent = msg;
+  el.style.color = isError ? 'var(--coral)' : 'var(--slate)';
+  const duration = isError ? 8000 : 3000;
+  setTimeout(() => { if (el.textContent === msg) el.textContent = ''; }, duration);
+}
+
+function sortEntries(list) {
+  const mode = document.getElementById('sortSelect').value;
+  const copy = [...list];
+  if (mode === 'date-asc') return copy.sort((a, b) => (a.date || '').localeCompare(b.date || ''));
+  if (mode === 'opponent') return copy.sort((a, b) => {
+    const cmp = (a.opponent || '').localeCompare(b.opponent || '');
+    return cmp !== 0 ? cmp : (b.date || '').localeCompare(a.date || '');
+  });
+  return copy.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+}
+
+function renderSummary() {
+  const el = document.getElementById('summaryContent');
+  if (entries.length === 0) {
+    el.innerHTML = '<div class="empty" style="padding:1rem 0;">Nothing to summarize yet — log a few moments first.</div>';
+    return;
+  }
+  const byOpp = {};
+  entries.forEach(e => {
+    const key = e.opponent || 'No opponent noted';
+    if (!byOpp[key]) byOpp[key] = { goal: 0, assist: 0, save: 0, skill: 0, other: 0, total: 0, dates: [] };
+    byOpp[key][e.type] = (byOpp[key][e.type] || 0) + 1;
+    byOpp[key].total += 1;
+    if (e.date) byOpp[key].dates.push(e.date);
+  });
+  const rows = Object.keys(byOpp).sort((a, b) => a.localeCompare(b)).map(opp => {
+    const o = byOpp[opp];
+    const dateRange = o.dates.length ? formatDate(o.dates.sort()[0]) : '—';
+    return `<tr>
+      <td class="opp-name">${escapeHtml(opp)}</td>
+      <td class="num">${dateRange}</td>
+      <td class="num">${o.goal}</td>
+      <td class="num">${o.assist}</td>
+      <td class="num">${o.save}</td>
+      <td class="num">${o.skill}</td>
+      <td class="num">${o.total}</td>
+    </tr>`;
+  }).join('');
+  el.innerHTML = `
+    <table class="opp-table">
+      <thead><tr>
+        <th>Opponent</th><th>Date</th><th>Goals</th><th>Assists</th><th>Saves</th><th>Skills</th><th>Total</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+  `;
+}
+
+function buildSummaryText() {
+  const goals = entries.filter(e => e.type === 'goal').length;
+  const assists = entries.filter(e => e.type === 'assist').length;
+  const saves = entries.filter(e => e.type === 'save').length;
+  const skills = entries.filter(e => e.type === 'skill').length;
+  const lines = [`Season summary — ${entries.length} moments logged`, `Goals: ${goals}  Assists: ${assists}  Saves: ${saves}  Skill moves: ${skills}`, ''];
+  const byOpp = {};
+  entries.forEach(e => {
+    const key = e.opponent || 'No opponent noted';
+    if (!byOpp[key]) byOpp[key] = [];
+    byOpp[key].push(e);
+  });
+  Object.keys(byOpp).sort((a, b) => a.localeCompare(b)).forEach(opp => {
+    const list = byOpp[opp];
+    const g = list.filter(e => e.type === 'goal').length;
+    const a = list.filter(e => e.type === 'assist').length;
+    lines.push(`vs ${opp}: ${g} goal(s), ${a} assist(s), ${list.length} moment(s) total`);
+  });
+  return lines.join('\n');
+}
+
+function render() {
+  document.getElementById('statGoals').textContent = entries.filter(e => e.type === 'goal').length;
+  document.getElementById('statAssists').textContent = entries.filter(e => e.type === 'assist').length;
+  document.getElementById('statTotal').textContent = entries.length;
+
+  renderSummary();
+
+  const container = document.getElementById('entries');
+  if (entries.length === 0) {
+    container.innerHTML = '<div class="empty"><div class="big">No moments logged yet</div>Add the first one above — a goal, an assist, a great save.</div>';
+    return;
+  }
+  const sorted = sortEntries(entries);
+  container.innerHTML = sorted.map(e => {
+    const linkHtml = e.link ? `<a href="${escapeAttr(e.link)}" target="_blank" rel="noopener">Watch clip →</a>` : '';
+    return `
+      <div class="entry tag-${e.type}">
+        <div class="entry-top">
+          <div>
+            <span class="chip tag-${e.type}">${typeLabel(e.type)}</span>
+          </div>
+          <div class="entry-meta">${formatDate(e.date)}${e.opponent ? ' · vs ' + escapeHtml(e.opponent) : ''}${e.minute ? ' · ' + escapeHtml(e.minute) : ''}</div>
+        </div>
+        ${e.notes ? `<p class="entry-notes">${escapeHtml(e.notes)}</p>` : ''}
+        <div class="entry-actions">
+          ${linkHtml}
+          <button class="link danger" onclick="deleteEntry('${e.id}')">Delete</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function escapeHtml(str) {
+  const d = document.createElement('div');
+  d.textContent = str;
+  return d.innerHTML;
+}
+function escapeAttr(str) {
+  return String(str).replace(/"/g, '&quot;');
+}
+
+async function deleteEntry(id) {
+  entries = entries.filter(e => e.id !== id);
+  render();
+  await saveEntries();
+  setStatus('Entry removed.');
+}
+
+document.getElementById('addBtn').addEventListener('click', async () => {
+  const date = document.getElementById('fDate').value;
+  const opponent = document.getElementById('fOpponent').value.trim();
+  const minute = document.getElementById('fMinute').value.trim();
+  const type = document.getElementById('fType').value;
+  const link = document.getElementById('fLink').value.trim();
+  const notes = document.getElementById('fNotes').value.trim();
+
+  if (!date && !opponent && !notes && !link) {
+    setStatus('Add at least a date, opponent, or note.', true);
+    return;
+  }
+
+  entries.push({
+    id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
+    date, opponent, minute, type, link, notes
+  });
+
+  document.getElementById('fOpponent').value = '';
+  document.getElementById('fMinute').value = '';
+  document.getElementById('fLink').value = '';
+  document.getElementById('fNotes').value = '';
+
+  render();
+  await saveEntries();
+  setStatus('Added to the log.');
+});
+
+document.getElementById('sortSelect').addEventListener('change', render);
+
+document.getElementById('copySummaryBtn').addEventListener('click', async () => {
+  const text = buildSummaryText();
+  try {
+    await navigator.clipboard.writeText(text);
+    setStatus('Summary copied to clipboard.');
+  } catch (e) {
+    setStatus('Could not copy — select and copy manually.', true);
+  }
+});
+
+document.getElementById('fDate').valueAsDate = new Date();
+loadEntries();
+loadPhotos();
+loadStandings();
+
+let standings = { wins: 0, losses: 0, draws: 0 };
+
+async function loadStandings() {
+  try {
+    const res = await fetch(API_URL + '?type=standings');
+    standings = await res.json();
+  } catch (e) {
+    standings = { wins: 0, losses: 0, draws: 0 };
+  }
+  document.getElementById('fWins').value = standings.wins || 0;
+  document.getElementById('fLosses').value = standings.losses || 0;
+  document.getElementById('fDraws').value = standings.draws || 0;
+  renderStandings();
+}
+
+function renderStandings() {
+  const el = document.getElementById('standingsDisplay');
+  el.innerHTML = `
+    <div class="standings-stat"><div class="n">${standings.wins || 0}</div><div class="l">Wins</div></div>
+    <div class="standings-stat"><div class="n">${standings.losses || 0}</div><div class="l">Losses</div></div>
+    <div class="standings-stat"><div class="n">${standings.draws || 0}</div><div class="l">Draws</div></div>
+  `;
+}
+
+document.getElementById('saveStandingsBtn').addEventListener('click', async () => {
+  standings = {
+    wins: parseInt(document.getElementById('fWins').value, 10) || 0,
+    losses: parseInt(document.getElementById('fLosses').value, 10) || 0,
+    draws: parseInt(document.getElementById('fDraws').value, 10) || 0
+  };
+  renderStandings();
+  try {
+    const res = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ type: 'standings', standings })
+    });
+    const result = await res.json();
+    if (result && result.success) {
+      setStatus('Standing saved.');
+    } else {
+      setStatus('Could not save standing.', true);
+    }
+  } catch (e) {
+    setStatus('Could not save standing: ' + e.message, true);
+  }
+});
+
+let photos = [];
+
+async function loadPhotos() {
+  try {
+    const res = await fetch(API_URL + '?type=photos');
+    photos = await res.json();
+  } catch (e) {
+    photos = [];
+  }
+  renderGallery();
+}
+
+function renderGallery() {
+  const el = document.getElementById('gallery');
+  el.innerHTML = photos.map(p => `
+    <div class="photo-item">
+      <img src="${escapeAttr(p.url)}" loading="lazy" onclick="window.open('${escapeAttr(p.url)}','_blank')">
+      <button class="del-btn" onclick="deletePhoto('${p.id}')" title="Delete">&times;</button>
+    </div>
+  `).join('');
+}
+
+document.getElementById('fPhoto').addEventListener('change', async (evt) => {
+  const files = Array.from(evt.target.files);
+  if (!files.length) return;
+  const statusEl = document.getElementById('uploadStatus');
+
+  for (const file of files) {
+    statusEl.textContent = `Uploading ${file.name}...`;
+    try {
+      const base64 = await fileToBase64(file);
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({
+          type: 'photo',
+          data: base64,
+          mimeType: file.type,
+          filename: file.name
+        })
+      });
+      const result = await res.json();
+      if (result && result.success) {
+        photos = result.photos;
+        renderGallery();
+      } else {
+        setStatus('Photo upload failed for ' + file.name, true);
+      }
+    } catch (e) {
+      setStatus('Photo upload failed: ' + e.message, true);
+    }
+  }
+  statusEl.textContent = '';
+  evt.target.value = '';
+});
+
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result.split(',')[1]);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+async function deletePhoto(id) {
+  photos = photos.filter(p => p.id !== id);
+  renderGallery();
+  try {
+    await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ type: 'deletePhoto', id })
+    });
+  } catch (e) {
+    setStatus('Could not delete photo — try again.', true);
+  }
+}
+</script>
+</body>
+</html>
